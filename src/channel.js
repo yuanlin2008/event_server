@@ -1,21 +1,22 @@
 const WebSocket = require("websocket").w3cwebsocket
 
 class Channel {
-  constructor(endPoint, channel) {
+  constructor(endPoint, channel, hbTimeout, rcTimeout) {
     this.endPoint = endPoint
     this.channel = channel
+    this.hbTimeout = hbTimeout
+    this.rcTimeout = rcTimeout
     this.cref = 0
     this.ref = 0
+  }
+
+  start() {
     this._connect()
   }
 
   close() {
+    this._clearTimer()
     this._clearSocket()
-    this._clearHeartbeat()
-    if (this.reconnecting) {
-      clearTimeout(this.reconnecting)
-      this.reconnecting = undefined
-    }
   }
 
   send(event, payload) {
@@ -29,36 +30,58 @@ class Channel {
   }
 
   _onOpen() {
-    console.log("OnOpen")
     this.send("phx_join", {})
+    this.heartbeatPending = undefined
+    this._startTimer(() => this._heartbeat(), this.hbTimeout)
+    if (this.onOpen) {
+      this.onOpen()
+    }
   }
   _onError() {
-    console.log("OnError")
     this._reconnect()
   }
   _onClose() {
-    console.log("OnClose")
     this._reconnect()
   }
   _onMessage(msg) {
     const [cref, ref, topic, event, payload] = JSON.parse(msg.data)
+    if (topic === "phoenix" && ref === this.heartbeatPending) {
+      this.heartbeatPending = undefined
+    } else if (event === "phx_reply") {
+      // channel opened or other reply.
+    } else if (event === "phx_error" || event === "phx_close") {
+      // channel error or close.
+      this._reconnect()
+    } else {
+      if (this.onEvent) {
+        this.onEvent(topic, event, payload)
+      }
+    }
   }
   _makeRef() {
     return this.ref++
   }
-  _startHeartbeat() {
-    const heartbeat = {}
-    heartbeat.timer = setInterval(() => {
-      heartbeat.acked = false
-      heartbeat.ref = this.ref
-      this._send("phoenix", "heartbeat", {})
-    }, 5000)
-    this.heartbeat = heartbeat
+  _startTimer(callback, timeout) {
+    this.timer = setTimeout(() => {
+      this.timer = undefined
+      callback()
+    }, timeout)
   }
-  _clearHeartbeat() {
-    if (this.heartbeat) {
-      clearInterval(this.heartbeat.timer)
-      this.heartbeat = undefined
+  _clearTimer() {
+    if (this.timer) {
+      clearTimeout(this.timer)
+      this.timer = undefined
+    }
+  }
+  _heartbeat() {
+    if (this.heartbeatPending) {
+      // heartbeat timeout.
+      this._reconnect()
+    } else {
+      // send heartbeat
+      this.heartbeatPending = this.ref
+      this._send("phoenix", "heartbeat", {})
+      this._startTimer(() => this._heartbeat(), this.hbTimeout)
     }
   }
 
@@ -69,24 +92,21 @@ class Channel {
     this.socket.onerror = () => this._onError()
     this.socket.onmessage = (msg) => this._onMessage(msg)
   }
+
   _clearSocket() {
-    this.socket.onerror = undefined
-    this.socket.onopen = undefined
-    this.socket.onclose = undefined
-    this.socket.onmessage = undefined
-    this.socket.close()
-    this.socket = undefined
-  }
-  _reconnect() {
-    if (this.reconnecting) {
-      return
+    if (this.socket) {
+      this.socket.onerror = undefined
+      this.socket.onopen = undefined
+      this.socket.onclose = undefined
+      this.socket.onmessage = undefined
+      this.socket.close()
+      this.socket = undefined
     }
-    this._clearSocket()
-    this._clearHeartbeat()
-    this.reconnecting = setTimeout(() => {
-      this.reconnecting = undefined
-      this._connect()
-    }, 5000)
+  }
+
+  _reconnect() {
+    this.close()
+    this._startTimer(() => this._connect(), this.rcTimeout)
   }
 }
 

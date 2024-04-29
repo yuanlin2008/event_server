@@ -1,25 +1,22 @@
-const WebSocket = require('websocket').w3cwebsocket
+const { Channel } = require("./channel")
 
 class Subscriber {
-  constructor(endPoint, userId) {
-    this.endPoint = endPoint
-    this.channel = `user:${userId}`
+  constructor(endPoint, userId, hbTimeout = 10000, rcTimeout = 2000) {
+    this.channel = new Channel(endPoint, `user:${userId}`, hbTimeout, rcTimeout)
+    this.channel.onOpen = () => this._onOpen()
+    this.channel.onEvent = (t, e, p) => this._onEvent(t, e, p)
     this.eventHandlers = new Map()
     this.targetHandlers = new Map()
-    this.socket = null
   }
 
-  start(){
-    if(this.socket !== null){
-      return;
-    }
-    const url = `${this.endPoint}/websocket?vsn=2.0.0`
-    this.socket = new WebSocket(url)
-    this.onopen = () => this._onOnpen()
+  start() {
+    this.channel.start()
   }
 
-  stop(){
+  stop() {
+    this.channel.stop()
   }
+
   subscribe(event, callback) {
     this.eventHandlers.set(event, callback)
   }
@@ -29,26 +26,51 @@ class Subscriber {
   }
 
   subscribeTarget(target, event, callback) {
-    if(!this.targetHandlers.has(target)){
-      // todo: subscribe this target
-      this.targetHandlers.set(target) = new Map()
+    if (!this.targetHandlers.has(target)) {
+      // subscribe this target
+      this.channel.send("subscribe", { targets: [target] })
+      this.targetHandlers.set(target, new Map())
     }
     this.targetHandlers.get(target).set(event, callback)
   }
 
   unsubscribeTarget(target, event = null) {
-    if(event === null){
+    if (event === null) {
       this.targetHandlers.delete(target)
       return
     }
-    if(!this.targetHandlers.has(target)){
+    if (!this.targetHandlers.has(target)) {
       return
     }
     const handlers = this.targetHandlers.get(target)
     handlers.delete(event)
-    if(handlers.size === 0) {
-      // todo: unsub this target.
+    if (handlers.size === 0) {
+      // unsub this target.
+      this.channel.send("unsubscribe", { targets: [target] })
       this.targetHandlers.delete(target)
+    }
+  }
+
+  _onOpen() {
+    // resubscribe targets.
+    if (this.targetHandlers.size > 0) {
+      const targets = Array.from(this.targetHandlers.keys())
+      this.channel.send("subscribe", { targets: targets })
+    }
+  }
+  _onEvent(target, event, payload) {
+    if (target !== this.channel.channel) {
+      return
+    }
+    if (event === "_target_" && this.targetHandlers.has(payload.target)) {
+      // target event.
+      const targetHandler = this.targetHandlers.get(payload.target)
+      if (targetHandler.has(payload.event)) {
+        targetHandler.get(payload.event)(payload.payload)
+      }
+    } else if (this.eventHandlers.has(event)) {
+      // user event.
+      this.eventHandlers.get(event)(payload)
     }
   }
 }

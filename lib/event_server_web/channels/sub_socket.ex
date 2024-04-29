@@ -1,7 +1,7 @@
 defmodule EventServerWeb.SubSocket do
   use Phoenix.Socket
 
-  channel "sub", EventServerWeb.SubChannel
+  channel "user:*", EventServerWeb.SubChannel
 
   @impl true
   def connect(_params, socket, _connect_info) do

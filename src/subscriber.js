@@ -1,8 +1,10 @@
+const path = require("path")
 const { Channel } = require("./channel")
 
 class Subscriber {
-  constructor(endPoint, userId, hbTimeout = 10000, rcTimeout = 2000) {
-    this.channel = new Channel(endPoint, `user:${userId}`, hbTimeout, rcTimeout)
+  constructor(baseURL, userId, hbTimeout = 10000, rcTimeout = 2000) {
+    const url = new URL(path.join(baseURL, "sub")).toString()
+    this.channel = new Channel(url, `user:${userId}`, hbTimeout, rcTimeout)
     this.channel.onOpen = () => this._onOpen()
     this.channel.onEvent = (t, e, p) => this._onEvent(t, e, p)
     this.eventHandlers = new Map()
@@ -22,7 +24,11 @@ class Subscriber {
   }
 
   unsubscribe(event) {
-    this.eventHandlers.delete(event)
+    if (event) {
+      this.eventHandlers.delete(event)
+    } else {
+      this.eventHandlers.clear()
+    }
   }
 
   subscribeTarget(target, event, callback) {
@@ -34,8 +40,8 @@ class Subscriber {
     this.targetHandlers.get(target).set(event, callback)
   }
 
-  unsubscribeTarget(target, event = null) {
-    if (event === null) {
+  unsubscribeTarget(target, event) {
+    if (event === undefined) {
       this.targetHandlers.delete(target)
       return
     }
@@ -59,7 +65,7 @@ class Subscriber {
     }
   }
   _onEvent(target, event, payload) {
-    if (target !== this.channel.channel) {
+    if (target !== this.channel.topic) {
       return
     }
     if (event === "_target_" && this.targetHandlers.has(payload.target)) {
@@ -75,4 +81,4 @@ class Subscriber {
   }
 }
 
-exports.Subscriber = Subscriber
+module.exports = Subscriber

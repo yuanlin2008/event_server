@@ -1,9 +1,10 @@
+const path = require("path")
 const WebSocket = require("websocket").w3cwebsocket
 
 class Channel {
-  constructor(endPoint, channel, hbTimeout, rcTimeout) {
-    this.endPoint = endPoint
-    this.channel = channel
+  constructor(baseURL, topic, hbTimeout, rcTimeout) {
+    this.url = new URL(path.join(baseURL, "websocket?vsn=2.0.0")).toString()
+    this.topic = topic
     this.hbTimeout = hbTimeout
     this.rcTimeout = rcTimeout
     this.cref = 0
@@ -20,7 +21,7 @@ class Channel {
   }
 
   send(event, payload) {
-    this._send(this.channel, event, payload)
+    this._send(this.topic, event, payload)
   }
   _send(topic, event, payload) {
     if (this.socket && this.socket.readyState === 1 /** OPEN */) {
@@ -86,7 +87,7 @@ class Channel {
   }
 
   _connect() {
-    this.socket = new WebSocket(`${this.endPoint}/websocket?vsn=2.0.0`)
+    this.socket = new WebSocket(this.url)
     this.socket.onopen = () => this._onOpen()
     this.socket.onclose = () => this._onClose()
     this.socket.onerror = () => this._onError()

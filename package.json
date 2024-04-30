@@ -1,14 +1,17 @@
 {
-  "name": "event_server",
-  "version": "1.0.0",
-  "description": "https://github.com/meh/amnesia\r https://github.com/meh/exquisite",
+  "name": "event-server_js",
+  "description": "Event server js api",
+  "version": "0.1.0",
+  "author": "yuanlin2008@hotmail.com",
+  "license": "ISC",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "files": [
+    "src"
+  ],
   "dependencies": {
     "websocket": "^1.0.34"
   }

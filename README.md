@@ -45,6 +45,10 @@ mix phx.server
 node test.js
 ```
 
+### Docker
+
+TODO
+
 ### npm
 
 EventServer 的 js API 可以从 npm 安装

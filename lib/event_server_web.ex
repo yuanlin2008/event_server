@@ -50,7 +50,7 @@ defmodule EventServerWeb do
   def verified_routes do
     quote do
       use Phoenix.VerifiedRoutes,
-        endpoint: EventServerWeb.Endpoint,
+        endpoint: EventServerWeb.EndpointPub,
         router: EventServerWeb.Router,
         statics: EventServerWeb.static_paths()
     end

@@ -7,8 +7,16 @@ defmodule EventServerWeb.PubChannel do
   end
 
   @impl true
-  def handle_in("publish", %{"target"=>target, "event"=>event, "payload"=>payload}, socket) do
-    EventServerWeb.Endpoint.broadcast(target, event, payload)
+  def handle_in(
+        "publish",
+        %{
+          "target" => target,
+          "event" => event,
+          "payload" => payload
+        },
+        socket
+      ) do
+    EventServerWeb.EndpointPub.broadcast(target, event, %{data: payload})
     {:noreply, socket}
   end
 end

@@ -16,18 +16,20 @@ class Publisher {
   }
 
   event(userId, event, payload) {
+    payload = payload === undefined ? null : payload
     this.channel.send("publish", {
       target: `user:${userId}`,
-      event: event,
-      payload: payload ? payload : {},
+      event,
+      payload,
     })
   }
 
   targetEvent(target, event, payload) {
+    payload = payload === undefined ? null : payload
     this.channel.send("publish", {
-      target: target,
-      event: event,
-      payload: payload ? payload : {},
+      target,
+      event,
+      payload,
     })
   }
 }

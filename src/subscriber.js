@@ -72,11 +72,11 @@ class Subscriber {
       // target event.
       const targetHandler = this.targetHandlers.get(payload.target)
       if (targetHandler.has(payload.event)) {
-        targetHandler.get(payload.event)(payload.payload)
+        targetHandler.get(payload.event)(payload.payload.data)
       }
     } else if (this.eventHandlers.has(event)) {
       // user event.
-      this.eventHandlers.get(event)(payload)
+      this.eventHandlers.get(event)(payload.data)
     }
   }
 }

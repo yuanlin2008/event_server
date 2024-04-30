@@ -20,7 +20,7 @@ defmodule EventServerWeb.ConnCase do
   using do
     quote do
       # The default endpoint for testing
-      @endpoint EventServerWeb.Endpoint
+      @endpoint EventServerWeb.EndpointPub
 
       use EventServerWeb, :verified_routes
 

@@ -45,6 +45,7 @@ class Channel {
     this._reconnect()
   }
   _onMessage(msg) {
+    //console.log(msg.data)
     const [cref, ref, topic, event, payload] = JSON.parse(msg.data)
     if (topic === "phoenix" && ref === this.heartbeatPending) {
       this.heartbeatPending = undefined

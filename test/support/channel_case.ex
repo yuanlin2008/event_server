@@ -24,7 +24,7 @@ defmodule EventServerWeb.ChannelCase do
       import EventServerWeb.ChannelCase
 
       # The default endpoint for testing
-      @endpoint EventServerWeb.Endpoint
+      @endpoint EventServerWeb.EndpointPub
     end
   end
 

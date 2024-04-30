@@ -6,7 +6,7 @@ import Config
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
-config :event_server, EventServerWeb.Endpoint,
+config :event_server, EventServerWeb.EndpointPub,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {127, 0, 0, 1}, port: 4000],
@@ -15,6 +15,8 @@ config :event_server, EventServerWeb.Endpoint,
   debug_errors: true,
   secret_key_base: "/kj8Td/JUCCpxJTeclaXhdzKDzYJXnHOGUUwIgrfMcNgbqOY0Ba3s80U/BhDi+1c",
   watchers: []
+
+config :event_server, EventServerWeb.EndpointSub, http: [ip: {127, 0, 0, 1}, port: 5000]
 
 # ## SSL Support
 #

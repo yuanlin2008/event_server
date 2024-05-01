@@ -27,13 +27,13 @@ defmodule EventServerWeb.SubChannel do
 
   defp subscribe(targets) do
     Enum.each(targets, fn target ->
-      EventServerWeb.EndpointPub.subscribe(target)
+      EventServerWeb.Endpoint.subscribe(target)
     end)
   end
 
   defp unsubscribe(targets) do
     Enum.each(targets, fn target ->
-      EventServerWeb.EndpointPub.unsubscribe(target)
+      EventServerWeb.Endpoint.unsubscribe(target)
     end)
   end
 end

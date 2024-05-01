@@ -10,8 +10,8 @@ import Config
 config :event_server,
   generators: [timestamp_type: :utc_datetime]
 
-# Configures the endpoint pub
-config :event_server, EventServerWeb.EndpointPub,
+# Configures the endpoint
+config :event_server, EventServerWeb.Endpoint,
   url: [host: "localhost"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
@@ -20,12 +20,6 @@ config :event_server, EventServerWeb.EndpointPub,
   ],
   pubsub_server: EventServer.PubSub,
   live_view: [signing_salt: "h9U0xaXx"]
-
-# Configures the endpoint sub
-config :event_server, EventServerWeb.EndpointSub,
-  url: [host: "localhost"],
-  adapter: Bandit.PhoenixAdapter,
-  pubsub_server: EventServer.PubSub
 
 # Configures Elixir's Logger
 config :logger, :console,

@@ -14,8 +14,7 @@ defmodule EventServer.Application do
       # Start a worker by calling: EventServer.Worker.start_link(arg)
       # {EventServer.Worker, arg},
       # Start to serve requests, typically the last entry
-      EventServerWeb.EndpointPub,
-      EventServerWeb.EndpointSub
+      EventServerWeb.Endpoint
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
@@ -29,7 +28,7 @@ defmodule EventServer.Application do
   @impl true
   @spec config_change(any(), any(), any()) :: :ok
   def config_change(changed, _new, removed) do
-    EventServerWeb.EndpointPub.config_change(changed, removed)
+    EventServerWeb.Endpoint.config_change(changed, removed)
     :ok
   end
 end

@@ -16,7 +16,7 @@ defmodule EventServerWeb.PubChannel do
         },
         socket
       ) do
-    EventServerWeb.EndpointPub.broadcast(target, event, %{data: payload})
+    EventServerWeb.Endpoint.broadcast(target, event, %{data: payload})
     {:noreply, socket}
   end
 end

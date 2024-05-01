@@ -1,4 +1,4 @@
-defmodule EventServerWeb.EndpointPub do
+defmodule EventServerWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :event_server
 
   # The session will be stored in the cookie and signed,
@@ -13,6 +13,11 @@ defmodule EventServerWeb.EndpointPub do
 
   # Publisher socket.
   socket "/pub", EventServerWeb.PubSocket,
+    websocket: true,
+    longpoll: false
+
+  # Subscriber socket.
+  socket "/sub", EventServerWeb.SubSocket,
     websocket: true,
     longpoll: false
 

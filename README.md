@@ -47,7 +47,13 @@ node test.js
 
 ### Docker
 
-TODO
+image: yuanlin2008/event_server:0.2
+
+env
+
+- SECRET_KEY_BASE 密钥
+- PORT 监听端口
+- PUB_SECRET Publisher 登录密码
 
 ### npm
 

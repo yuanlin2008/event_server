@@ -68,6 +68,7 @@ import { Publisher } from "event-server_js"
 
 const publisher = new Publisher(
   "ws://localhost:4000", // Pub地址
+  "12345", // 登录密码
   10000, // 心跳间隔(10s)
   1000 //重连间隔(1s)
 )

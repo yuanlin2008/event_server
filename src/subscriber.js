@@ -4,7 +4,7 @@ const { Channel } = require("./channel")
 class Subscriber {
   constructor(baseURL, userId, hbTimeout = 10000, rcTimeout = 2000) {
     const url = new URL(path.join(baseURL, "sub")).toString()
-    this.channel = new Channel(url, `user:${userId}`, hbTimeout, rcTimeout)
+    this.channel = new Channel(url, {}, `user:${userId}`, hbTimeout, rcTimeout)
     this.channel.onOpen = () => this._onOpen()
     this.channel.onEvent = (t, e, p) => this._onEvent(t, e, p)
     this.eventHandlers = new Map()

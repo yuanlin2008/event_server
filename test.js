@@ -1,8 +1,8 @@
 const { Publisher, Subscriber } = require("./src/index")
 
-const p1 = new Publisher("ws://localhost:8888")
-const s1 = new Subscriber("ws://localhost:8888", 1)
-const s2 = new Subscriber("ws://localhost:8888", 2)
+const p1 = new Publisher("ws://localhost:4000", "12345")
+const s1 = new Subscriber("ws://localhost:4000", 1)
+const s2 = new Subscriber("ws://localhost:4000", 2)
 
 p1.start()
 

@@ -42,6 +42,8 @@ config :event_server, EventServerWeb.Endpoint,
 # Enable dev routes for dashboard and mailbox
 config :event_server, dev_routes: true
 
+config :event_server, pub_secret: "12345"
+
 # Do not include metadata nor timestamps in development logs
 config :logger, :console, format: "[$level] $message\n"
 

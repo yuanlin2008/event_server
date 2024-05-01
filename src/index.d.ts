@@ -8,10 +8,16 @@ export class Publisher {
   /**
    * constructor
    * @param baseURL websocket base url, e.g, "ws://localhost:4000"
+   * @param secret secret to login.
    * @param hbTimeout heartbeat timeout
    * @param rcTimeout reconnect timeout.
    */
-  constructor(baseURL: string, hbTimeout?: number, rcTimeout?: number)
+  constructor(
+    baseURL: string,
+    secret: string,
+    hbTimeout?: number,
+    rcTimeout?: number
+  )
 
   /**
    * Start working

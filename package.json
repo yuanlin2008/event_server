@@ -1,7 +1,7 @@
 {
   "name": "event-server_js",
   "description": "Event server js api",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "author": "yuanlin2008@hotmail.com",
   "license": "ISC",
   "main": "src/index.js",

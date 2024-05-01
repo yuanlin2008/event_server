@@ -1,9 +1,13 @@
 const path = require("path")
+const querystring = require("querystring")
 const WebSocket = require("websocket").w3cwebsocket
 
 class Channel {
-  constructor(baseURL, topic, hbTimeout, rcTimeout) {
-    this.url = new URL(path.join(baseURL, "websocket?vsn=2.0.0")).toString()
+  constructor(baseURL, params, topic, hbTimeout, rcTimeout) {
+    params = Object.assign({}, params, { vsn: "2.0.0" })
+    const urlBase = new URL(path.join(baseURL, "websocket?")).toString()
+    this.url = `${urlBase}${querystring.stringify(params)}`
+    console.log(this.url)
     this.topic = topic
     this.hbTimeout = hbTimeout
     this.rcTimeout = rcTimeout

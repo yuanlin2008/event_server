@@ -2,9 +2,9 @@ const path = require("path")
 const { Channel } = require("./channel")
 
 class Publisher {
-  constructor(baseURL, hbTimeout = 10000, rcTimeout = 2000) {
+  constructor(baseURL, secret, hbTimeout = 10000, rcTimeout = 2000) {
     const url = new URL(path.join(baseURL, "pub")).toString()
-    this.channel = new Channel(url, `pub`, hbTimeout, rcTimeout)
+    this.channel = new Channel(url, { secret }, `pub`, hbTimeout, rcTimeout)
   }
 
   start() {

@@ -7,7 +7,6 @@ class Channel {
     params = Object.assign({}, params, { vsn: "2.0.0" })
     const urlBase = new URL(path.join(baseURL, "websocket?")).toString()
     this.url = `${urlBase}${querystring.stringify(params)}`
-    console.log(this.url)
     this.topic = topic
     this.hbTimeout = hbTimeout
     this.rcTimeout = rcTimeout
